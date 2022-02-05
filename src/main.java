@@ -81,10 +81,10 @@ public class main {
         System.out.println("The global hit ratio: \n");
         System.out.println("The number of 1st-level references: " + multiLayerCache.getLayerOne().getAccesses());
         System.out.println("The number of 1st-level cache hits: " + multiLayerCache.getLayerOne().getHits());
-        System.out.println("The 1st-level cache hit ratio: " + (double) multiLayerCache.getLayerOne().getAccesses() / multiLayerCache.getLayerOne().getHits() + "\n");
+        System.out.println("The 1st-level cache hit ratio: " + (double) multiLayerCache.getLayerOne().getHits() / multiLayerCache.getLayerOne().getAccesses() + "\n");
         System.out.println("The number of 2nd-level references: " + multiLayerCache.getLayerTwo().getAccesses());
         System.out.println("The number of 2nd-level cache hits: " + multiLayerCache.getLayerTwo().getHits());
-        System.out.println("The 2nd-level cache hit ratio: " + (double) multiLayerCache.getLayerTwo().getAccesses() / multiLayerCache.getLayerTwo().getHits());
+        System.out.println("The 2nd-level cache hit ratio: " + (double) multiLayerCache.getLayerTwo().getHits() / multiLayerCache.getLayerTwo().getAccesses());
 
 
     }

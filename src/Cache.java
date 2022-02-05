@@ -18,6 +18,15 @@ public class Cache<T> {
         head = null;
     }
 
+    public void print(){
+        System.out.print("Cache layer Values: ");
+        DLLNode<T> node = head;
+        while (node != null){
+            System.out.print(node.getElement() + ", ");
+            node = node.getNext();
+        }
+    }
+
     /**
      * @param data Adds new Node containing data to from of DLL
      */
@@ -64,7 +73,11 @@ public class Cache<T> {
      * @param data
      */
     public T remove(T data) {
-        DLLNode<T> badNode = find(data);
+        DLLNode<T> badNode = find(data, false);
+
+        if (data == null){
+            return null;
+        }
 
         if (badNode != null) {
             T returnValue = badNode.getElement();
@@ -88,8 +101,10 @@ public class Cache<T> {
      * @return
      */
     // TODO: Checked edge cases
-    public DLLNode find(T data) {
-        accesses++;
+    public DLLNode<T> find(T data, boolean trackAccesses) {
+        if (trackAccesses) {
+            accesses++;
+        }
         DLLNode<T> current = head;
 
         while (current != null) {
@@ -107,16 +122,31 @@ public class Cache<T> {
     /**
      * @param data
      */
-    public T move(T data) {
+    public void move(T data) {
+        DLLNode<T> temp = head;
 
-        T outgoingElement = (T)find(data).getElement();
+        while (temp != null){
+            if (temp.getElement().equals(data)){
+                if (temp == head){
+                    return;
+                }
 
-        if (outgoingElement != null) {
-            remove(outgoingElement);
+                if (temp.getPrev() != null){
+                    temp.getPrev().setNext(temp.getNext());
+                }
+                if (temp.getNext() != null){
+                    temp.getNext().setPrev(temp.getPrev());
+                }
+                temp.setPrev(null);
+                temp.setNext(head);
+                head.setPrev(temp);
+
+                head = temp;
+                return;
+            }
+
+            temp = temp.getNext();
         }
-
-
-        return outgoingElement;
     }
 
     /**

@@ -9,18 +9,20 @@ public class MultiLayerCache<T> {
     }
 
     public void cacheSearch(T data) {
-        if (layerOne.find(data) != null) {
+        if (layerOne.find(data, true) != null) {
             layerOne.move(data);
+            layerTwo.move(data);
         } else {
-            if (layerTwo.find(data) != null) {
+            if (layerTwo.find(data, true) != null) {
                 layerTwo.move(data);
                 layerOne.add(data);
             } else {
-                layerOne.add(data);
                 T temp = layerTwo.add(data);
                 if (temp != null) {
                     layerOne.remove(temp);
                 }
+
+                layerOne.add(data);
             }
         }
     }

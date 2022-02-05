@@ -2,7 +2,6 @@ public class Cache<T> {
 
 
     private DLLNode<T> head; // Stores reference to front of DLL
-    private DLLNode<T> tail; // Stores reference to end of DLL
     private int count; // # elements in DLL instance
     private int capacity; // max # in DLL instance
     private int hits; // times desired element has been found
@@ -17,13 +16,12 @@ public class Cache<T> {
         hits = 0;
         accesses = 0;
         head = null;
-        tail = null;
     }
 
     /**
      * @param data Adds new Node containing data to from of DLL
      */
-    public void add(T data) {
+    public T add(T data) {
         DLLNode<T> newNode = new DLLNode<>(data);
 
         // In case that list is not empty
@@ -36,15 +34,16 @@ public class Cache<T> {
         count++;
 
         // In case that list is at capacity
-        if (count == capacity) {
-            removeLast();
+        if (count > capacity) {
+            return removeLast();
         }
+        return null;
     }
 
     /**
      *
      */
-    public void removeLast() {
+    public T removeLast() {
         DLLNode<T> temp = head;
         while (temp.getNext() != null){
             temp = temp.getNext();
@@ -58,6 +57,7 @@ public class Cache<T> {
         }
 
         count--;
+        return temp.getElement();
     }
 
     /**
@@ -123,7 +123,7 @@ public class Cache<T> {
      * @return
      */
     public double getHitRate() {
-        return hits / accesses;
+        return (double) hits / accesses;
     }
 
     public int getAccesses() {

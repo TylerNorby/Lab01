@@ -27,32 +27,34 @@ public class Cache<T> {
         DLLNode<T> newNode = new DLLNode<>(data);
 
         // In case that list is not empty
-        if (count != 0) {
+        if (head != null) {
             newNode.setNext(head);
             head.setPrev(newNode);
-            count++;
         }
+
+        head = newNode;
+        count++;
 
         // In case that list is at capacity
         if (count == capacity) {
             removeLast();
         }
-        head = newNode;
-        count++;
     }
 
     /**
      *
      */
     public void removeLast() {
+        DLLNode<T> temp = head;
+        while (temp.getNext() != null){
+            temp = temp.getNext();
+        }
 
-        // In case where removing last element in list
-        if (count == 1) {
+        if (temp == head){
             head = null;
-            tail = null;
-        } else { // Standard Case
-            tail = tail.getPrev();
-            tail.setNext(null);
+        } else {
+            temp.getPrev().setNext(null);
+            temp.setPrev(null);
         }
 
         count--;
@@ -62,18 +64,23 @@ public class Cache<T> {
      * @param data
      */
     public T remove(T data) {
-
         DLLNode<T> badNode = find(data);
 
         if (badNode != null) {
-
             T returnValue = badNode.getElement();
-            badNode.getNext().setPrev(badNode.getPrev());
-            badNode.getPrev().setNext(badNode.getNext());
+
+            if (badNode.getNext() != null) { // Make sure to not set next on null node
+                badNode.getNext().setPrev(badNode.getPrev());
+            }
+            if (badNode.getPrev() != null) { // Head does not have a previous node.
+                badNode.getPrev().setNext(badNode.getNext());
+            } else {
+                head = badNode.getNext();
+            }
+
+            count--; // Only count remove if it removed something
             return returnValue;
         }
-
-        count--;
         return null;
     }
 

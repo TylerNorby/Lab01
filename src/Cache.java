@@ -2,7 +2,6 @@ public class Cache<T> {
 
 
     private DLLNode<T> head; // Stores reference to front of DLL
-    private DLLNode<T> tail; // Stores reference to end of DLL
     private int count; // # elements in DLL instance
     private int capacity; // max # in DLL instance
     private int hits; // times desired element has been found
@@ -17,63 +16,71 @@ public class Cache<T> {
         hits = 0;
         accesses = 0;
         head = null;
-        tail = null;
     }
 
     /**
      * @param data Adds new Node containing data to from of DLL
      */
-    public void add(T data) {
+    public T add(T data) {
         DLLNode<T> newNode = new DLLNode<>(data);
 
         // In case that list is not empty
-        if (count != 0) {
+        if (head != null) {
             newNode.setNext(head);
             head.setPrev(newNode);
-            count++;
         }
 
-        // In case that list is at capacity
-        if (count == capacity) {
-            removeLast();
-        }
         head = newNode;
         count++;
+
+        // In case that list is at capacity
+        if (count > capacity) {
+            return removeLast();
+        }
+        return null;
     }
 
     /**
      *
      */
-    public void removeLast() {
+    public T removeLast() {
+        DLLNode<T> temp = head;
+        while (temp.getNext() != null){
+            temp = temp.getNext();
+        }
 
-        // In case where removing last element in list
-        if (count == 1) {
+        if (temp == head){
             head = null;
-            tail = null;
-        } else { // Standard Case
-            tail = tail.getPrev();
-            tail.setNext(null);
+        } else {
+            temp.getPrev().setNext(null);
+            temp.setPrev(null);
         }
 
         count--;
+        return temp.getElement();
     }
 
     /**
      * @param data
      */
     public T remove(T data) {
-
         DLLNode<T> badNode = find(data);
 
         if (badNode != null) {
-
             T returnValue = badNode.getElement();
-            badNode.getNext().setPrev(badNode.getPrev());
-            badNode.getPrev().setNext(badNode.getNext());
+
+            if (badNode.getNext() != null) { // Make sure to not set next on null node
+                badNode.getNext().setPrev(badNode.getPrev());
+            }
+            if (badNode.getPrev() != null) { // Head does not have a previous node.
+                badNode.getPrev().setNext(badNode.getNext());
+            } else {
+                head = badNode.getNext();
+            }
+
+            count--; // Only count remove if it removed something
             return returnValue;
         }
-
-        count--;
         return null;
     }
 
@@ -116,7 +123,7 @@ public class Cache<T> {
      * @return
      */
     public double getHitRate() {
-        return hits / accesses;
+        return (double) hits / accesses;
     }
 
     public int getAccesses() {
